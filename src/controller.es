@@ -4,7 +4,7 @@ module controller {
   module events from 'events';
   class ControllerType {
     constructor() {
-      private dispatcher, images, javascripts, lastRequest, reconnect, texts, wsLocation, wsEnabled, xmls;
+      private dispatcher, images, javascripts, lastRequest, reconnecthook, texts, wsLocation, wsEnabled, xmls;
       @images = {};
       @javascripts = {};
       @texts = {};
@@ -67,7 +67,7 @@ module controller {
                 var subscriber = subscribers[i];
                 subscriber(valid);
               } catch (e) {
-                log.Logger.error('receive: caught exception: '+e.message);
+                log.Logger.error(this,'Caught exception: '+e.message);
               }
             }
           } else {
@@ -118,8 +118,7 @@ module controller {
     onclose(event){
       try {
         log.Logger.error(this,' wasClean='+event.wasClean);
-        this.connect({location: @wsLocation});
-        reconnect();
+        @reconnecthook && @reconnecthook();
       } catch(e) {
         log.Logger.error(this, ' caught exception ' + e.message);
       }
@@ -152,17 +151,14 @@ module controller {
     onopen(ev){
       try {
         @wsEnabled = true;
-        if(reconnect) {
-          reconnect();
-          reconnect = null;
-        }
+        @reconnecthook && @reconnecthook();
       } catch(e) {
         log.Logger.error(this,'onopen: caught exception '+e.message);
       }
     }
     onreconnect(hook) {
       try {
-        reconnect = hook;
+        @reconnecthook = hook;
       } catch(e) {
         log.Logger.error(this,'onreconnect: caught exception '+e.message);
       }

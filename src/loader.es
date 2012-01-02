@@ -17,15 +17,15 @@ module loader {
         @modules.forEach(function(module) {
             @request.jsTypes.push({jsType:module});
         },this);
-        controller.Controller.subscribe("resourceresponse",this.onresourceresponse);
+        controller.Controller.subscribe("resourceresponse",this.onresourceresponse.bind(this));
         setTimeout(controller.Controller.publish.partial(@request), 1);
       } catch(e) {
         log.Logger.error(this,e);
       }
     }
     onresourceresponse(resourceresponse) {
-      ++responses;
-      (request.jsTypes.length === (responses+1)) && require.ready && require.ready();  
+      ++@responses;
+      @request.jsTypes && @request.jsTypes.length === (@responses+1) && require.ready && require.ready();  
     }
     static modules = {};
   }
