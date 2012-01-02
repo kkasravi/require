@@ -1,0 +1,12 @@
+{
+  "name"          : "require",
+  "description"   : "implementation of commonjs",
+  "url"           : "http://kkasravi.github.com/require/",
+  "keywords"      : ["commonjs", "functional", "require", "module", "es.next"],
+  "author"        : "Kam Kasravi <kkasravi@yahoo.com>",
+  "contributors"  : [],
+  "dependencies"  : {},
+  "lib"           : ".",
+  "main"          : "require.js",
+  "version"       : "0.1"
+}

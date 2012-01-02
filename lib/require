@@ -1,0 +1,616 @@
+if (typeof(Object.create) !== 'function') {
+  Object.create = function(o) {
+    function F() {}
+    F.prototype = o;
+    return new F();
+  };
+}
+if (typeof(Object.adapt) !== 'function') {
+  Object.adapt = function() {
+    var target = arguments[0];
+    var items = Array.prototype.slice.call(arguments, 1);
+    for (var i = 0, l = items.length; i < l; i++) {
+      for (var j in items[i]) {
+        if (items[i].hasOwnProperty(j) && !target.hasOwnProperty(j)) {
+          target[j] = items[i][j];
+        }
+      }
+    }
+    return target;
+  };
+}
+if (typeof(String.prototype.trim) !== 'function') {
+  String.prototype.trim = function() {
+    return this.replace(/^\s+|\s+$/, '');
+  };
+}
+if (typeof(String.prototype.last) !== 'function') {
+  String.prototype.last = function() {
+    return this.charAt(this.length - 1);
+  };
+}
+if (typeof(String.prototype.removeWS) !== 'function') {
+  String.prototype.removeWS = function() {
+    return this.replace(/\t/g, " ").replace(/\s+/g, " ");
+  };
+}
+if (typeof(String.prototype.typeCase) !== 'function') {
+  String.prototype.typeCase = function(name) {
+    var value = this.toString();
+    if (typeof value === 'object') {
+      value = String(value);
+    }
+    return value.replace(/^([a-z])/, function(m, l) {
+      return l.substr(0, 1).toUpperCase() + l.substr(1, l.length);
+    }).replace(/[\-_\s](.)/g, function(m, l) {
+      return l.toUpperCase();
+    });
+  };
+}
+if (typeof(String.prototype.camelCase) !== 'function') {
+  String.prototype.camelCase = function() {
+    var value = this.toString();
+    if (typeof value === 'object') {
+      value = String(value);
+    }
+    return value.replace(/^([A-Z])/, function(m, l) {
+      return l.substr(0, 1).toLowerCase() + l.substr(1, l.length);
+    }).replace(/[\-_\s](.)/g, function(m, l) {
+      return l.toUpperCase();
+    });
+  };
+}
+if (typeof(String.prototype.escape) !== 'function') {
+  String.prototype.escape = function() {
+    return this.replace(new RegExp("\n", "g"), " ").replace(new RegExp("\t", "g"), " ").
+    replace(new RegExp("\"", "g"), "\\\"").replace(new RegExp("\'", "g"), "\\'").
+    replace(new RegExp("<", "g"), "&lt;").replace(new RegExp(">", "g"), "&gt;");
+  };
+}
+if (typeof(String.prototype.namespace) !== 'function') {
+  String.prototype.namespace = function(separator, thisp) {
+    function namespace(fullNS, separator) {
+      var parent = this;
+      fullNS.split(separator || '.').forEach(function(ns) {
+        parent = parent[ns] = parent[ns] || {};
+      });
+    }
+    sys.puts('namespace=' + this);
+    namespace.call((thisp || window), this, separator);
+  };
+}
+if (typeof Array.prototype.isArray != 'function') {
+  Array.prototype.isArray = function(obj) {
+    if (obj.constructor && obj.constructor.toString().indexOf("Array") === -1) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+}
+if (typeof Array.prototype.top != 'function') {
+  Array.prototype.top = function() {
+    return this.length && this[this.length - 1];
+  };
+}
+if (typeof Array.prototype.forEach != 'function') {
+  Array.prototype.forEach = function(fn, thisObj) {
+    var scope = thisObj || window;
+    for (var i = 0, j = this.length; i < j; ++i) {
+      fn.call(scope, this[i], i, this);
+    }
+  };
+}
+if (typeof Array.prototype.every != 'function') {
+  Array.prototype.every = function(fn, thisObj) {
+    var scope = thisObj || window;
+    for (var i = 0, j = this.length; i < j; ++i) {
+      if (!fn.call(scope, this[i], i, this)) {
+        return false;
+      }
+    }
+    return true;
+  };
+}
+if (typeof Array.prototype.some != 'function') {
+  Array.prototype.some = function(fn, thisObj) {
+    var scope = thisObj || window;
+    for (var i = 0, j = this.length; i < j; ++i) {
+      if (fn.call(scope, this[i], i, this)) {
+        return true;
+      }
+    }
+    return false;
+  };
+}
+if (typeof Array.prototype.map != 'function') {
+  Array.prototype.map = function(fn, thisObj) {
+    var scope = thisObj || window;
+    var a = [];
+    for (var i = 0, j = this.length; i < j; ++i) {
+      a.push(fn.call(scope, this[i], i, this));
+    }
+    return a;
+  };
+}
+if (typeof Array.prototype.filter != 'function') {
+  Array.prototype.filter = function(fn, thisObj) {
+    var scope = thisObj || window;
+    var a = [];
+    for (var i = 0, j = this.length; i < j; ++i) {
+      if (!fn.call(scope, this[i], i, this)) {
+        continue;
+      }
+      a.push(this[i]);
+    }
+    return a;
+  };
+}
+if (typeof Array.prototype.indexOf != 'function') {
+  Array.prototype.indexOf = function(el, start) {
+    start = start || 0;
+    for (var i = start, j = this.length; i < j; ++i) {
+      if (this[i] === el) {
+        return i;
+      }
+    }
+    return -1;
+  };
+}
+if (typeof Array.prototype.lastIndexOf != 'function') {
+  Array.prototype.lastIndexOf = function(el, start) {
+    start = start || this.length;
+    if (start >= this.length) {
+      start = this.length;
+    }
+    if (start < 0) {
+      start = this.length + start;
+    }
+    for (var i = start; i >= 0; --i) {
+      if (this[i] === el) {
+        return i;
+      }
+    }
+    return -1;
+  };
+}
+if (typeof Array.prototype.toHashSet != 'function') {
+  Array.prototype.toHashSet = function(key) {
+    var lset = {};
+    for (var i = 0; i < this.length; ++i) {
+      var entry = this[i];
+      if (typeof(entry) !== 'function') {
+        lset[entry[key]] = entry;
+      }
+    }
+    return lset;
+  };
+}
+if (typeof Array.prototype.toArray != 'function') {
+  Array.prototype.toArray = function(object) {
+    var array = [];
+    if (object instanceof NodeList) {
+      for (var i = 0; i < object.length; ++i) {
+        array.push(object.item(i));
+      }
+    }
+    return array;
+  };
+}
+if (!Date.prototype.toJSON) {
+  Date.prototype.toJSON = function(key) {
+    function f(n) {
+      // Format integers to have at least two digits.
+      return n < 10 ? '0' + n : n;
+    }
+    return this.getUTCFullYear() + '-' + f(this.getUTCMonth() + 1) + '-' + f(this.getUTCDate()) + 'T' + f(this.getUTCHours()) + ':' + f(this.getUTCMinutes()) + ':' + f(this.getUTCSeconds()) + 'Z';
+  };
+}
+if (!Date.prototype.fromISO8601) {
+  Date.prototype.fromISO8601 = function(formattedString) {
+    var regEx = /^(?:(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(.\d+)?)?((?:[+-](\d{2}):(\d{2}))|Z)?)?$/;
+    var match = regEx.exec(formattedString);
+    var result = null;
+    if (match) {
+      match.shift();
+      if (match[1]) {
+        match[1]--;
+      }
+      if (match[6]) {
+        match[6] *= 1000;
+      }
+      result = new Date(match[0] || 1970, match[1] || 0, match[2] || 0, match[3] || 0, match[4] || 0, match[5] || 0, match[6] || 0);
+      var offset = 0;
+      var zoneSign = match[7] && match[7].charAt(0);
+      if (zoneSign != 'Z') {
+        offset = ((match[8] || 0) * 60) + (Number(match[9]) || 0);
+        if (zoneSign != '-') {
+          offset *= -1;
+        }
+      }
+      if (zoneSign) {
+        offset -= result.getTimezoneOffset();
+      }
+      if (offset) {
+        result.setTime(result.getTime() + offset * 60000);
+      }
+    }
+    return result;
+  };
+}
+if (!Date.prototype.toISO8601) {
+  Date.prototype.toISO8601 = function() {
+    var zeropad = function(num) {
+      return ((num < 10) ? '0' : '') + num;
+    };
+    var zeropad2 = function(num) {
+      if (num < 10) {
+        return ('00' + num);
+      }
+      if (num < 100) {
+        return ('0' + num);
+      }
+      return '' + num;
+    };
+    var str = "";
+    str += this.getUTCFullYear();
+    str += "-" + zeropad(this.getUTCMonth() + 1);
+    str += "-" + zeropad(this.getUTCDate());
+    str += "T" + zeropad(this.getUTCHours());
+    str += ":" + zeropad(this.getUTCMinutes());
+    str += ":" + zeropad(this.getUTCSeconds());
+    str += "." + zeropad2(this.getUTCMilliseconds());
+    str += "Z";
+    return str;
+  };
+}
+if (!Date.prototype.format) {
+  /*
+ * Date Format 1.2.3
+ * (c) 2007-2009 Steven Levithan <stevenlevithan.com>
+ * MIT license
+ *
+ * Includes enhancements by Scott Trenda <scott.trenda.net>
+ * and Kris Kowal <cixar.com/~kris.kowal/>
+ *
+ * Accepts a date, a mask, or a date and a mask.
+ * Returns a formatted version of the given date.
+ * The date defaults to the current date/time.
+ * The mask defaults to dateFormat.masks.default.
+ */
+  var dateFormat = function() {
+    var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
+      timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[\-+]\d{4})?)\b/g,
+      timezoneClip = /[^\-+\dA-Z]/g;
+    var pad = function(val, len) {
+      val = String(val);
+      len = len || 2;
+      while (val.length < len) {
+        val = "0" + val;
+      }
+      return val;
+    };
+    // Regexes and supporting functions are cached through closure
+    return function(date, mask, utc) {
+      var dF = dateFormat;
+      // You can't provide utc if you skip other args (use the "UTC:" mask prefix)
+      if (arguments.length == 1 && Object.prototype.toString.call(date) == "[object String]" && !/\d/.test(date)) {
+        mask = date;
+        date = undefined;
+      }
+      // Passing date through Date applies Date.parse, if necessary
+      date = date ? new Date(date) : new Date();
+      if (isNaN(date)) {
+        throw SyntaxError("invalid date");
+      }
+      mask = String(dF.masks[mask] || mask || dF.masks["default"]);
+      // Allow setting the utc argument via the mask
+      if (mask.slice(0, 4) == "UTC:") {
+        mask = mask.slice(4);
+        utc = true;
+      }
+      var _ = utc ? "getUTC" : "get",
+      d = date[_ + "Date"](),
+      D = date[_ + "Day"](),
+      m = date[_ + "Month"](),
+      y = date[_ + "FullYear"](),
+      H = date[_ + "Hours"](),
+      M = date[_ + "Minutes"](),
+      s = date[_ + "Seconds"](),
+      L = date[_ + "Milliseconds"](),
+      o = utc ? 0 : date.getTimezoneOffset(),
+      flags = {
+        d: d,
+        dd: pad(d),
+        ddd: dF.i18n.dayNames[D],
+        dddd: dF.i18n.dayNames[D + 7],
+        m: m + 1,
+        mm: pad(m + 1),
+        mmm: dF.i18n.monthNames[m],
+        mmmm: dF.i18n.monthNames[m + 12],
+        yy: String(y).slice(2),
+        yyyy: y,
+        h: H % 12 || 12,
+        hh: pad(H % 12 || 12),
+        H: H,
+        HH: pad(H),
+        M: M,
+        MM: pad(M),
+        s: s,
+        ss: pad(s),
+        l: pad(L, 3),
+        L: pad(L > 99 ? Math.round(L / 10) : L),
+        t: H < 12 ? "a" : "p",
+        tt: H < 12 ? "am" : "pm",
+        T: H < 12 ? "A" : "P",
+        TT: H < 12 ? "AM" : "PM",
+        Z: utc ? "UTC" : (String(date).match(timezone) || [""]).pop().replace(timezoneClip, ""),
+        o: (o > 0 ? "-" : "+") + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
+        S: ["th", "st", "nd", "rd"][d % 10 > 3 ? 0 : (d % 100 - d % 10 != 10) * d % 10]
+      };
+      return mask.replace(token, function($0) {
+        return $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1);
+      });
+    };
+  }();
+  // Some common format strings
+  dateFormat.masks = {
+    "default": "ddd mmm dd yyyy HH:MM:ss",
+    shortDate: "m/d/yy",
+    mediumDate: "mmm d, yyyy",
+    longDate: "mmmm d, yyyy",
+    fullDate: "dddd, mmmm d, yyyy",
+    shortTime: "h:MM TT",
+    mediumTime: "h:MM:ss TT",
+    longTime: "h:MM:ss TT Z",
+    isoDate: "yyyy-mm-dd",
+    isoTime: "HH:MM:ss",
+    isoDateTime: "yyyy-mm-dd'T'HH:MM:ss",
+    isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
+  };
+  // Internationalization strings
+  dateFormat.i18n = {
+    dayNames: [
+      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
+      "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+      ],
+    monthNames: [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+      ]
+  };
+  // For convenience...
+  Date.prototype.format = function(mask, utc) {
+    return dateFormat(this, mask, utc);
+  };
+}
+if (!Date.prototype.diff) {
+  Date.prototype.diff = function(otime) {
+    var delta = this.getTime() - otime;
+    var one_day = 1000 * 60 * 60 * 24;
+    var one_hour = 1000 * 60 * 60;
+    var one_minute = 1000 * 60;
+    var days = Math.abs(Math.round(delta / one_day));
+    if (days > 0) {
+      return days + (days === 1 ? " day ago" : " days ago");
+    } else {
+      var hours = Math.abs(Math.round(delta / one_hour));
+      if (hours > 0) {
+        return hours + (hours === 1 ? " hour ago" : " hours ago");
+      } else {
+        var minutes = Math.abs(Math.round(delta / one_minute));
+        return minutes + (minutes === 1 ? " minute ago" : " minutes ago");
+      }
+    }
+  };
+}
+if (typeof(Function.prototype.bind) !== 'function') {
+  Function.prototype.bind = function(context) {
+    var fn = this,
+      isPartial = arguments.length > 1;
+    if (!isPartial) {
+      return function() {
+        if (arguments.length !== 0) {
+          return fn.apply(context, arguments);
+        } else {
+          return fn.call(context);
+        }
+      };
+    } else {
+      var args = Array.prototype.slice.call(arguments, 1);
+      return function() {
+        return fn.apply(context, arguments.length === 0 ? args : Array.prototype.concat.apply(arguments, args));
+      };
+    }
+  };
+}
+if (typeof(Function.prototype.curry) !== 'function') {
+  Function.prototype.curry = function() {
+    var method = this,
+      args = Array.prototype.slice.call(arguments);
+    return function() {
+      return method.apply(this, args.concat(Array.prototype.slice.call(arguments)));
+    };
+  };
+}
+if (typeof(Function.prototype.partial) !== 'function') {
+  Function.prototype.partial = function() {
+    var method = this,
+      args = Array.prototype.slice.call(arguments);
+    return function() {
+      return method.apply(this, args.concat(Array.prototype.slice.call(arguments)));
+    };
+  };
+}
+if (typeof(Function.prototype.bindAsEventListener) !== 'function') {
+  Function.prototype.bindAsEventListener = function(object) {
+    var method = this;
+    return function(event) {
+      method.call(object, event || window.event);
+    };
+  };
+}
+if (typeof(Function.prototype.contents) !== 'function') {
+  Function.prototype.contents = function() {
+    return this.toString().match(/^[^\{]*{((.*\n*)*)}/m)[1];
+  };
+}
+if (typeof(Function.prototype.params) !== 'function') {
+  Function.prototype.params = function() {
+    return this.toString().match(/\((.*?)\)/)[1].match(/\w+/g) || [];
+  };
+}
+if (typeof(Math.uuid) !== 'function') {
+  Math.uuid = (function() {
+    // Private array of chars to use
+    var CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+    return function uuid(len, radix) {
+      var chars = CHARS,
+        uuidArray = [],
+        rnd = Math.random;
+      radix = radix || chars.length;
+      var i;
+      if (len) {
+        // Compact form
+        for (i = 0; i < len; i++) {
+          uuidArray[i] = chars[0 | rnd() * radix];
+        }
+      } else {
+        // rfc4122, version 4 form
+        var ri = 0,
+          r;
+        // rfc4122 requires these characters
+        uuidArray[8] = uuidArray[13] = uuidArray[18] = uuidArray[23] = '-';
+        uuidArray[14] = '4';
+        // Fill in random data.  At i==19 set the high bits of clock sequence as
+        // per rfc4122, sec. 4.1.5
+        for (i = 0; i < 36; i++) {
+          if (!uuidArray[i]) {
+            r = 0 | rnd() * 16;
+            uuidArray[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r & 0xf];
+          }
+        }
+      }
+      return uuidArray.join('');
+    };
+  })();
+}
+if (typeof(Math.isNumber) !== 'function') {
+  Math.isNumber = function(x) {
+    if (!x) {
+      return false;
+    }
+    if (typeof x == 'number') {
+      return true;
+    }
+    if (typeof x == 'string') {
+      for (var i = 0; i < x.length; ++i) {
+        var digit = x.charAt(i);
+        var tr = /[0-9]/.test(parseInt(digit, 10));
+        if (! (digit === '.' || tr)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+}
+require = null;
+(function() {
+  require = function(moduleId) {
+    var requiredModule = module.getModule(moduleId);
+    if (requiredModule) {
+      return requiredModule.getExports();
+    } else {
+      module.Module(moduleId).setLoader(require('loader').Loader({
+        http: require.paths.top(),
+        modules: [moduleId]
+      }));
+    }
+  };
+  require.paths = [];
+  var modules = {};
+  var module = {};
+  var ready;
+  require.ready = function(cb) {
+    if(cb) {
+      ready = cb;
+    } else {
+      ready && ready();
+    }
+  };
+  module.getModule = function(mid) {
+    return modules[mid];
+  };
+  module.Module = (function() {
+    function Module() {
+      // private
+      function privateData() {
+        this.exports = {};
+        this.id = null;
+        this.loader = null;
+        this.requires = [];
+      };
+      var p_vars = new privateData();
+      var exports = p_vars.exports;
+      this.getExports = function getExports() {
+        return exports;
+      };
+      this.setExports = function setExports(e) {
+        exports = e;
+        return this;
+      };
+      var id = p_vars.id;
+      this.getId = function getId() {
+        return id;
+      };
+      this.setId = function setId(i) {
+        id = i;
+        return this;
+      };
+      var loader = p_vars.loader;
+      this.getLoader = function getLoader() {
+        return loader;
+      };
+      this.setLoader = function setLoader(l) {
+        loader = l;
+        return this;
+      };
+      var requires = p_vars.requires;
+      this.getRequires = function getRequires() {
+        return requires;
+      };
+      this.setRequires = function setRequires(r) {
+        requires = r;
+        return this;
+      };
+      // privileged
+      this.addExport = function(name, value) {
+        exports[name] = exports[name] || value;
+        return this;
+      };
+      this.addRequire = function(req) {
+        requires.push(req);
+        return this;
+      };
+      this.getExport = function(name) {
+        return exports[name];
+      };
+      // constructor
+      var args = Array.prototype.slice.call(arguments);
+      arguments.callee.ctor = function() {
+        try {
+          id = arguments[0];
+          modules[id] = this;
+        } catch(e) {
+          log.Logger.error(this, e);
+        }
+      };
+      return arguments.callee.ctor.apply(this, args) || this;
+    };
+    return function() {
+      var args = Array.prototype.slice.call(arguments);
+      return Module.apply({},
+      args);
+    };
+  })();

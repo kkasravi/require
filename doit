@@ -1,0 +1,17 @@
+#!/bin/ksh
+for i in src/*.es;
+do
+cd ~/node.client
+a=${i##*/}
+b=${a%.es}.js
+tests/parsers/pegjs/harmony/emitter.js $a > ~/require/lib/$b
+cd -
+done
+rm -f lib/require.js
+cat lib/require > lib/require.js
+cat lib/log.js >> lib/require.js
+cat lib/events.js >> lib/require.js
+cat lib/event.js >> lib/require.js
+cat lib/controller.js >> lib/require.js
+cat lib/loader.js >> lib/require.js
+echo '})();' >> lib/require.js
