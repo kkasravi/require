@@ -8,13 +8,13 @@ module event {
         @type = properties.type;
         @functor = properties.functor;
         @instance = properties.instance;
-        @subscribers = properties.subscribers;
+        @subscribers = properties.subscribers || [];
       } catch(e) {
         log.Logger.error(this,e);
       }
     }
   };
-  export class Event {
+  class EventType {
     constructor() {
       private eventMap, eventNameToEventClassNameMap;
       try {
@@ -417,6 +417,7 @@ module event {
       return instance;
     }
   };
+  export const Event = EventType();
   export class Publisher {
     constructor(properties={ast:null,transpiler:null}) {
       private pubDepth, cleanupArray, subscriber;

@@ -11,7 +11,6 @@ module controller {
       @wsEnabled = false;
       @xmls = {};
       try {
-        event.event.rebuild();
         this.subscribe("dataresponse", this.ondataresponse.bind(this));
         this.subscribe("resourceresponse", this.onresourceresponse.bind(this));
         this.subscribe('jsonparseerror', this.onservererror.bind(this));
@@ -19,10 +18,10 @@ module controller {
         log.Logger.error(this,e);
       }
     }
-    connect(properties={}) {
+    connect(properties) {
       try {
         @wsLocation = properties.location;
-        @dispatcher = MozWebSocket ?  new MozWebSocket(@wsLocation): new WebSocket(@wsLocation);
+        @dispatcher = typeof(MozWebSocket) != 'undefined' ?  new MozWebSocket(@wsLocation): new WebSocket(@wsLocation);
         @dispatcher.onopen = this.onopen.bind(this);
         @dispatcher.onmessage = this.onmessage.bind(this);
         @dispatcher.onclose = this.onclose.bind(this);
@@ -145,7 +144,7 @@ module controller {
     }
     onmessage(ev){
       try {
-        this.receive(this.useFlash() ? ev : ev.data);
+        this.receive(ev.data);
       } catch(e) {
         log.Logger.error(this,'onmessage: caught exception '+e.message);
       }

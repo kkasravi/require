@@ -2,31 +2,30 @@ module events {
   module log from 'log';
   export class Event {
     constructor(properties={}) {
-      private altKey, bubbles, button, cancelable, clientX, clientY, ctrlKey, currentTarget, defaultPrevented, detail, e, eventPhase, keyCode, metaKey, relatedTarget, screenX, screenY, shiftKey, target, timeStamp, type, propagationStopped, cancelableMap, bubblesMap;
       try {
-        @altKey=properties.altKey;
-        @bubbles = properties.bubbles ? properties.bubbles : this.doesBubble(properties.type);
-        @button = this.getButton(properties.button);
-        @cancelable = properties.cancelable ? properties.cancelable : this.isCancelable(properties.type);
-        @clientX = properties.clientX; 
-        @clientY = properties.clientY;
-        @ctrlKey = properties.ctrlKey;
-        @currentTarget = null;
-        @defaultPrevented = false;
-        @detail = properties.detail;
-        @e = properties.e;
-        @eventPhase = Event.CAPTURING_PHASE; 
-        @keyCode = properties.keyCode; 
-        @metaKey = null;
-        @relatedTarget = properties.fromElement; 
-        @screenX = properties.screenX;
-        @screenY = properties.screenY;
-        @shiftKey = properties.shiftKey;
-        @target = properties.srcElement; 
-        @timeStamp = new Date().getTime(); 
-        @type = properties.type; 
-        @propagationStopped = false;
-        @cancelableMap = {
+        this.altKey=properties.altKey;
+        this.bubbles = properties.bubbles ? properties.bubbles : this.doesBubble(properties.type);
+        this.button = this.getButton(properties.button);
+        this.cancelable = properties.cancelable ? properties.cancelable : this.isCancelable(properties.type);
+        this.clientX = properties.clientX; 
+        this.clientY = properties.clientY;
+        this.ctrlKey = properties.ctrlKey;
+        this.currentTarget = null;
+        this.defaultPrevented = false;
+        this.detail = properties.detail;
+        this.e = properties.e;
+        this.eventPhase = Event.CAPTURING_PHASE; 
+        this.keyCode = properties.keyCode; 
+        this.metaKey = null;
+        this.relatedTarget = properties.fromElement; 
+        this.screenX = properties.screenX;
+        this.screenY = properties.screenY;
+        this.shiftKey = properties.shiftKey;
+        this.target = properties.srcElement; 
+        this.timeStamp = new Date().getTime(); 
+        this.type = properties.type; 
+        this.propagationStopped = false;
+        this.cancelableMap = {
           load: false,
           unload: false,
           abort: false,
@@ -40,7 +39,7 @@ module events {
           resize: false,
           scroll: false
         };
-        @bubblesMap = {
+        this.bubblesMap = {
           load: false,
           unload: false,
           abort: false,
@@ -59,10 +58,10 @@ module events {
       }
     }
     doesBubble(type) {
-      return type && @bubblesMap[type];
+      return type && this.bubblesMap[type];
     }
     isCancelable(type) {
-      return type && @cancelableMap[type];
+      return type && this.cancelableMap[type];
     }
     getButton(i) {
       switch (i) { // Left button
@@ -75,28 +74,28 @@ module events {
       }
     }
     initEvent(type, canBubble, cancelable) {
-      @type = type;
-      @bubbles = canBubble;
-      @cancelable = cancelable;
+      this.type = type;
+      this.bubbles = canBubble;
+      this.cancelable = cancelable;
     }
     stopPropagation() {
-      @propagationStopped = true;
+      this.propagationStopped = true;
     }
     preventDefault() {
-      if (@cancelable) {
-        @defaultPrevented = true;
-        @returnValue = false;
+      if (this.cancelable) {
+        this.defaultPrevented = true;
+        this.returnValue = false;
       }
     }
     propagate(chain, useCapture) {
       for (var i = 0; i < chain.length; i++) {
-        if (chain[i][@type]) { 
-          var l = chain[i][@type].length; 
+        if (chain[i][this.type]) { 
+          var l = chain[i][this.type].length; 
           for (var j = 0; j < l; j++) {
-            if (chain[i][@type][j].useCapture === useCapture) {
-              @currentTarget = chain[i];
-              chain[i][@type][j].fnc.call(chain[i], this); // Check whether stopPropagation has been called
-              if (@propagationStopped) return false;
+            if (chain[i][this.type][j].useCapture === useCapture) {
+              this.currentTarget = chain[i];
+              chain[i][this.type][j].fnc.call(chain[i], this); // Check whether stopPropagation has been called
+              if (this.propagationStopped) return false;
             }
           }
         }
@@ -116,30 +115,29 @@ module events {
   }
   export class TouchEvent extends UIEvent {
     constructor(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, touches, targetTouches, changedTouches, scale, rotation) {
-      private changedTouches, rotation, scale, touches, targetTouches;
-      @changedTouches = [];
-      @rotation = null;
-      @scale = null;
-      @touches = [];
-      @targetTouches = [];
-      @cancelableMap = {
+      this.changedTouches = [];
+      this.rotation = null;
+      this.scale = null;
+      this.touches = [];
+      this.targetTouches = [];
+      this.cancelableMap = {
         touchstart: true,
         touchmove: true,
         touchcancel: true,
         touchend: true
       };
-      @bubblesMap = {
+      this.bubblesMap = {
         touchstart: true,
         touchmove: true,
         touchcancel: true,
         touchend: true
       };
       this.initTouchEvent(properties);
-      @touches = properties.touches;
-      @targetTouches = properties.targetTouches;
-      @changedTouches = properties.changedTouches;
-      @scale = properties.scale;
-      @rotation = properties.rotation;
+      this.touches = properties.touches;
+      this.targetTouches = properties.targetTouches;
+      this.changedTouches = properties.changedTouches;
+      this.scale = properties.scale;
+      this.rotation = properties.rotation;
     }
     initTouchEvent(properties) {
       UIEvent.call(this,properties);
@@ -147,10 +145,9 @@ module events {
   }
   export class MouseEvent extends Event {
     constructor(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, relatedTarget) {
-      private screenX, screenY;
-      @screenX = null;
-      @screenY = null;
-      @cancelableMap = {
+      this.screenX = null;
+      this.screenY = null;
+      this.cancelableMap = {
         click: true,
         mousedown: true,
         mouseup: true,
@@ -158,7 +155,7 @@ module events {
         mousemove: true,
         mouseout: true
       };
-      @bubblesMap = {
+      this.bubblesMap = {
         click: true,
         mousedown: true,
         mouseup: true,
@@ -173,21 +170,21 @@ module events {
     }
     initMouseEvent(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, 
       shiftKey, metaKey, button, relatedTarget) {
-        @type = type;
-        @bubbles = canBubble;
-        @cancelable = cancelable;
-        @view = view;
-        @detail = null;
-        @screenX = screenX;
-        @screenY = screenY;
-        @clientX = clientX;
-        @clientY = clientY;
-        @ctrlKey = ctrlKey;
-        @altKey = altKey;
-        @shiftKey = shiftKey;
-        @metaKey = null;
-        @button = button;
-        @relatedTarget = relatedTarget;
+        this.type = type;
+        this.bubbles = canBubble;
+        this.cancelable = cancelable;
+        this.view = view;
+        this.detail = null;
+        this.screenX = screenX;
+        this.screenY = screenY;
+        this.clientX = clientX;
+        this.clientY = clientY;
+        this.ctrlKey = ctrlKey;
+        this.altKey = altKey;
+        this.shiftKey = shiftKey;
+        this.metaKey = null;
+        this.button = button;
+        this.relatedTarget = relatedTarget;
     }
   }
   export class CustomEvent extends Event {
@@ -199,162 +196,148 @@ module events {
     }
   }
   export class MessageEvent extends Event {
-    constructor(properties={type:'message'}) {
-      private data, origin, lastEventId, source, ports;
-      this.initMessageEvent('message',@bubbles,@cancelable,@data,@origin,@lastEventId,@source,@ports);
+    constructor(p={type:'message'}) {
+      this.initMessageEvent('message',p.bubbles,p.cancelable,p.data,p.origin,p.lastEventId,p.source,p.ports);
     }
     initMessageEvent(type, bubbles, cancelable, data, origin, lastEventId, source, ports) {
         Event.call(this, type, bubbles, cancelable);
-        @data = data;
+        this.data = data;
         if(location) {
-          @origin = location.protocol + '//' + location.host + (location.port ? ':' + location.port :  '');
+          this.origin = location.protocol + '//' + location.host + (location.port ? ':' + location.port :  '');
         } else {
-          @origin = origin;
+          this.origin = origin;
         }
-        @lastEventId = lastEventId || 0;
-        @ports = ports;        
-        @source = source;
+        this.lastEventId = lastEventId || 0;
+        this.ports = ports;        
+        this.source = source;
     }
   }
   export class PutResourceRequest {
     constructor(properties={type:'putresourcerequest'}) {
-      private path, cssTypes, imgTypes, jsTypes, txtTypes, xmlTypes, type;
-      @path = properties.path;
-      @cssTypes = properties.cssTypes || [];
-      @imgTypes = properties.imgTypes || [];
-      @jsTypes = properties.jsTypes || [];
-      @txtTypes = properties.txtTypes || [];
-      @xmlTypes = properties.xmlTypes || [];
-      @type = properties.type || 'putresourcerequest';
+      this.path = properties.path;
+      this.cssTypes = properties.cssTypes || [];
+      this.imgTypes = properties.imgTypes || [];
+      this.jsTypes = properties.jsTypes || [];
+      this.txtTypes = properties.txtTypes || [];
+      this.xmlTypes = properties.xmlTypes || [];
+      this.type = properties.type || 'putresourcerequest';
     }
   }
   export class PutResourceResponse {
     constructor(properties={type:'putresourceresponse'}) {
-      private path, cssTypes, imgTypes, jsTypes, txtTypes, xmlTypes, type;
-      @path = properties.path;
-      @cssTypes = properties.cssTypes || [];
-      @imgTypes = properties.imgTypes || [];
-      @jsTypes = properties.jsTypes || [];
-      @txtTypes = properties.txtTypes || [];
-      @xmlTypes = properties.xmlTypes || [];
-      @type = properties.type || 'putresourceresponse';
+      this.path = properties.path;
+      this.cssTypes = properties.cssTypes || [];
+      this.imgTypes = properties.imgTypes || [];
+      this.jsTypes = properties.jsTypes || [];
+      this.txtTypes = properties.txtTypes || [];
+      this.xmlTypes = properties.xmlTypes || [];
+      this.type = properties.type || 'putresourceresponse';
     }
   }
   export class ResourceRequest {
     constructor(properties={}) {
-      private exclude, path, cssTypes, imgTypes, jsTypes, specTypes, txtTypes, xmlTypes, type;
-      @exclude = properties.exclude;
-      @path = properties.path;
-      @cssTypes = properties.cssTypes || [];
-      @imgTypes = properties.imgTypes || [];
-      @jsTypes = properties.jsTypes || [];
-      @specTypes = properties.specTypes || [];
-      @txtTypes = properties.txtTypes || [];
-      @xmlTypes = properties.xmlTypes || [];
-      @type = properties.type || 'resourcerequest';
+      this.exclude = properties.exclude;
+      this.path = properties.path;
+      this.cssTypes = properties.cssTypes || [];
+      this.imgTypes = properties.imgTypes || [];
+      this.jsTypes = properties.jsTypes || [];
+      this.specTypes = properties.specTypes || [];
+      this.txtTypes = properties.txtTypes || [];
+      this.xmlTypes = properties.xmlTypes || [];
+      this.type = properties.type || 'resourcerequest';
     }
   }
   export class ResourceResponse {
     constructor(properties={}) {
-      private exclude, path, cssTypes, imgTypes, jsTypes, specTypes, txtTypes, xmlTypes, type;
-      @exclude = properties.exclude;
-      @path = properties.path;
-      @cssTypes = properties.cssTypes || [];
-      @imgTypes = properties.imgTypes || [];
-      @jsTypes = properties.jsTypes || [];
-      @specTypes = properties.specTypes || [];
-      @txtTypes = properties.txtTypes || [];
-      @xmlTypes = properties.xmlTypes || [];
-      @type = properties.type || 'resourceresponse';
+      this.exclude = properties.exclude;
+      this.path = properties.path;
+      this.cssTypes = properties.cssTypes || [];
+      this.imgTypes = properties.imgTypes || [];
+      this.jsTypes = properties.jsTypes || [];
+      this.specTypes = properties.specTypes || [];
+      this.txtTypes = properties.txtTypes || [];
+      this.xmlTypes = properties.xmlTypes || [];
+      this.type = properties.type || 'resourceresponse';
     }
   }
   export class DataItem {
     constructor(properties={}) {
-      private id, name, module, value, count, range, since, before, sort, type;
-      @id = Math.uuid(8);
-      @name = properties.name;
-      @module = properties.module;
-      @value = properties.value;
-      @count = properties.count;
-      @range = properties.range;
-      @since = properties.since;
-      @before = properties.before;
-      @sort = properties.sort;
-      @type = 'dataitem';
+      this.id = Math.uuid(8);
+      this.name = properties.name;
+      this.module = properties.module;
+      this.value = properties.value;
+      this.count = properties.count;
+      this.range = properties.range;
+      this.since = properties.since;
+      this.before = properties.before;
+      this.sort = properties.sort;
+      this.type = 'dataitem';
     }
   }
   export class DataItem {
     constructor(properties={}) {
-      private cookie, data, ip, userAgent, session, type;
       try {
-        @cookie = properties.cookie || ((typeof(document) !== 'undefined') && document.cookie);
-        @data = properties.data;
-        @ip = properties.ip;
-        @session = properties.session || (this.cookie && this.cookie.split('=')[1]);
+        this.cookie = properties.cookie || ((typeof(document) !== 'undefined') && document.cookie);
+        this.data = properties.data;
+        this.ip = properties.ip;
+        this.session = properties.session || (this.cookie && this.cookie.split('=')[1]);
         if(typeof navigator !== 'undefined') {
-          @userAgent = navigator && navigator.userAgent;
+          this.userAgent = navigator && navigator.userAgent;
         } else {
-          @userAgent = properties.userAgent;
+          this.userAgent = properties.userAgent;
         }
-        @type = 'dataitem';
+        this.type = 'dataitem';
       } catch(e) {
         log.Logger.error(this,e);
       }
-      return this;
     }
   }
   export class DataResponse {
     constructor(properties={}) {
-      private data, session, type;
-      @data = properties.data;
-      @session = properties.session;
-      @type = 'dataresponse';
+      this.data = properties.data;
+      this.session = properties.session;
+      this.type = 'dataresponse';
     }
   }
   export class ListRequest {
     constructor(properties={}) {
-      private exclude, path, names, type;
-      @exclude = properties.exclude;
-      @path = properties.path;
-      @names = properties.names || [];
-      @type = 'listrequest';
+      this.exclude = properties.exclude;
+      this.path = properties.path;
+      this.names = properties.names || [];
+      this.type = 'listrequest';
     }
   }
   export class ListResponse {
     constructor(properties={}) {
-      private names, type;
-      @names = properties.names || [];
-      @type = 'listresponse';
+      this.names = properties.names || [];
+      this.type = 'listresponse';
     }
   }
   export class InstallRequest {
     constructor(properties={}) {
-      private jsHandlers, type;
-      @jsHandlers = properties.jsHandlers || [];
-      @type = 'installrequest';
+      this.jsHandlers = properties.jsHandlers || [];
+      this.type = 'installrequest';
     }
   }
   export class InstallResponse {
     constructor(properties={}) {
-      private jsHandlers, type;
-      @jsHandlers = properties.jsHandlers || [];
-      @type = 'installresponse';
+      this.jsHandlers = properties.jsHandlers || [];
+      this.type = 'installresponse';
     }
   }
   export class PutDataRequest {
     constructor(properties={}) {
-      private cookie, data, ip, userAgent, session, type;
       try {
-        @cookie = properties.cookie || ((typeof(document) !== 'undefined') && document.cookie);
-        @data = properties.data;
-        @ip = properties.ip;
-        @session = properties.session || (@cookie && @cookie.split('=')[1]);
+        this.cookie = properties.cookie || ((typeof(document) !== 'undefined') && document.cookie);
+        this.data = properties.data;
+        this.ip = properties.ip;
+        this.session = properties.session || (this.cookie && this.cookie.split('=')[1]);
         if(typeof navigator !== 'undefined') {
-          @userAgent = navigator && navigator.userAgent;
+          this.userAgent = navigator && navigator.userAgent;
         } else {
-          @userAgent = properties.userAgent;
+          this.userAgent = properties.userAgent;
         }
-        @type = 'putdatarequest';
+        this.type = 'putdatarequest';
       } catch(e) {
         log.Logger.error(this,e);
       }
