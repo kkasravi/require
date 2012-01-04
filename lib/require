@@ -529,7 +529,7 @@ require = null;
     }
   };
   require.paths = [];
-  var modules = {};
+  require.modules = {};
   var module = {};
   var ready;
   require.ready = function(cb) {
@@ -540,7 +540,7 @@ require = null;
     }
   };
   module.getModule = function(mid) {
-    return modules[mid];
+    return require.modules[mid];
   };
   module.Module = (function() {
     function Module() {
@@ -601,7 +601,7 @@ require = null;
       arguments.callee.ctor = function() {
         try {
           id = arguments[0];
-          modules[id] = this;
+          require.modules[id] = this;
         } catch(e) {
           log.Logger.error(this, e);
         }

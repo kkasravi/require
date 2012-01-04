@@ -13,7 +13,7 @@ module event {
         log.Logger.error(this,e);
       }
     }
-  };
+  }
   class EventType {
     constructor() {
       private eventMap, eventNameToEventClassNameMap;
@@ -416,7 +416,7 @@ module event {
       }
       return instance;
     }
-  };
+  }
   export const Event = EventType();
   export class Publisher {
     constructor(properties={ast:null,transpiler:null}) {

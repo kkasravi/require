@@ -200,24 +200,22 @@ module controller {
         }
       }, this);
       message.jsTypes.forEach(function(jsType) {
-        var jsName = jsType.jsName.split('.')[0], jsContent;
+        var jsName = jsType.jsName.replace(/.js$/,''), jsContent;
         try {
           if (!@javascripts[jsName]) {
             jsContent = unescape(jsType.jsType);
-            if (@javascripts[jsName]) {
-              log.Logger.debug(this, jsName + ' already loaded');
-            } else {
-              @javascripts[jsName] = jsContent;
-              var wrapper = [];
-              wrapper.push('(function () {');
-              wrapper.push('  var nm = module.Module("'+jsName+'");');
-              wrapper.push('  (function (require, exports, moduleId) {');
-              wrapper.push(jsContent);
-              wrapper.push('  })(require,nm.getExports(),nm.getId());');
-              wrapper.push('})();');
-              var content = wrapper.join('\n');
-              eval(content);
-            }
+            @javascripts[jsName] = jsContent;
+            var wrapper = [];
+            wrapper.push('(function () {');
+            wrapper.push('  var nm = module.Module("'+jsName+'");');
+            wrapper.push('  (function (require, exports, moduleId) {');
+            wrapper.push(jsContent);
+            wrapper.push('  })(require,nm.getExports(),nm.getId());');
+            wrapper.push('})();');
+            var content = wrapper.join('\n');
+            eval(content);
+          } else {
+            log.Logger.warning(this, jsName + ' already loaded');
           }
         } catch(e) {
           log.Logger.error(this, 'jsTypes caught exception on '+ jsName + ':' + e.message);
