@@ -8,5 +8,5 @@
   "dependencies"  : {},
   "lib"           : ".",
   "main"          : "require.js",
-  "version"       : "0.1"
+  "version"       : "0.2"
 }
