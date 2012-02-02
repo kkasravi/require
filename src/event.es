@@ -418,10 +418,10 @@ module event {
     }
   }
   export const Event = EventType();
-  export class Publisher {
-    constructor(properties={ast:null,transpiler:null}) {
-      private pubDepth, cleanupArray, subscriber;
-      @pubDepth = 0;
+  class PublisherType {
+    constructor() {
+      private depth, cleanupArray, subscriber;
+      @depth = 0;
       @cleanupArray = [];
       @subscriber = [];
     }
@@ -465,22 +465,23 @@ module event {
       }
     }      
     pubDepth(value){
-      @pubDepth += value ? value : 0;
-      return @pubDepth;
+      @depth += value ? value : 0;
+      return @depth;
     }
     publish(name, message){
       var path = name.split(".");
       this.pubDepth(1);
       this.doPublish(Subscriber.subscriptions, path, 0, name, message);
       this.pubDepth(-1);
-      if ((this.cleanup().length > 0) && (this.pubDepth() === 0)) {
+      if ((this.cleanup().length > 0) && (@depth === 0)) {
         for (var i = 0; i < this.cleanup().length; i++) {
           Subscriber.unsubscribe(this.cleanup(i).hdl);
         }
         this.dispose();
       }
     }
-  };
+  }
+  export const Publisher = PublisherType();
   class SubscriberType {
     constructor(properties={ast:null,transpiler:null}) {
       private subIndex, subscriptions;
@@ -532,7 +533,7 @@ module event {
           var max = callbacks.length;
           for (var i = 0; i < max; i++) {
             if (sid == callbacks[i].sid) {
-              if (this.m_pubDepth > 0) {
+              if (@depth > 0) {
                 callbacks[i].cb = null;
                 this.m_cleanup.push(callbacks[i]);
               }
