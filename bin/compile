@@ -1,12 +1,14 @@
 #!/bin/ksh
+cwd=$(pwd)
 for i in src/*.es;
 do
-cd ~/node.client
+cd ~/transpiler
 a=${i##*/}
 b=${a%.es}.js
-tests/parsers/pegjs/harmony/emitter.js $a > ~/require/lib/$b
-cd -
+echo ${cwd}/$i
+bin/transpiler ${cwd}/$i > ${cwd}/lib/$b
 done
+cd ${cwd}
 rm -f lib/require.js
 cat lib/require > lib/require.js
 cat lib/log.js >> lib/require.js

@@ -274,7 +274,7 @@ module events {
       this.type = 'dataitem';
     }
   }
-  export class DataItem {
+  export class DataRequest {
     constructor(properties={}) {
       try {
         this.cookie = properties.cookie || ((typeof(document) !== 'undefined') && document.cookie);
