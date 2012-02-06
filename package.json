@@ -7,6 +7,6 @@
   "contributors"  : [],
   "dependencies"  : {},
   "lib"           : ".",
-  "main"          : "require.js",
+  "main"          : "lib/require.js",
   "version"       : "0.3"
 }
