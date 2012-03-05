@@ -96,7 +96,7 @@ module log {
       switch(type) {
         case "object":
           if(message instanceof Error) {
-            emitString(this,message.name + " " + message.message + "\n" + message.stack);
+            emitString(this,message.name + " " + message.message + (message.line ? " line:" + message.line: "") + (message.stack ? message.stack + "\n": "\n"));
           } else {
             for(property in message) {
               try {
