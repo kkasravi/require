@@ -244,6 +244,7 @@ module event {
       } else if (type === 'MouseEvent') {
       } else if (type === 'KeyboardEvent') {
       } else if (type === 'TouchEvent') {
+      } else if (type === 'WebKitAnimationEvent') {
       } else if (type === 'WebKitTransitionEvent') {
       } else if (type === 'UIEvent') {
       } else if (type === 'CustomEvent') {
@@ -312,6 +313,8 @@ module event {
             @eventNameToEventClassNameMap.DOMFocusIn = eventType;
             @eventNameToEventClassNameMap.DOMFocusOut = eventType;
             @eventNameToEventClassNameMap.DOMActivate = eventType;
+          } else if (eventName === 'WebKitAnimationEvent') {
+            @eventNameToEventClassNameMap.webKitAnimationEnd = eventType;
           } else if (eventName === 'WebKitTransitionEvent') {
             @eventNameToEventClassNameMap.webKitTransitionEnd = eventType;
           } else if (eventName === 'TouchEvent') {
